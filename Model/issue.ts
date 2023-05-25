@@ -83,7 +83,7 @@ const issueSchema = new Schema({
                 name: { type: String },
               },
               contact: {
-                phone: { type: Number },
+                phone: { type: String },
                 email: { type: String },
               },
               person: {
@@ -105,7 +105,7 @@ const issueSchema = new Schema({
                 name: { type: String },
               },
               contact: {
-                phone: { type: Number },
+                phone: { type: String },
                 email: { type: String },
               },
               person: {
@@ -136,7 +136,7 @@ const issueSchema = new Schema({
               name: { type: String },
             },
             contact: {
-              phone: { type: Number },
+              phone: { type: String },
               email: { type: String },
             },
             person: {
@@ -146,7 +146,7 @@ const issueSchema = new Schema({
           resolution_support: {
             chat_link: { type: String },
             contact: {
-              phone: { type: Number },
+              phone: { type: String },
               email: { type: String },
             },
             gros: [
@@ -155,7 +155,7 @@ const issueSchema = new Schema({
                   name: { type: String },
                 },
                 contact: {
-                  phone: { type: Number },
+                  phone: { type: String },
                   email: { type: String },
                 },
                 gro_type: {

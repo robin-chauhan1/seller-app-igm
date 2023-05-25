@@ -122,11 +122,6 @@ class IssueService {
         .send({ success: true, issues: specificProviderIssue });
     }
 
-    console.log(
-      "req.body?.user?.user?.role?.name",
-      req.body?.user?.user?.organization
-    );
-
     if (req.body?.user?.user?.role?.name === "Super Admin") {
       const allIssues = await Issue.find()
         .sort({ "message.issue.created_at": -1 })
@@ -147,10 +142,9 @@ class IssueService {
   }
 
   async issue_response(req: Request, res: Response) {
-    let on_issue;
     let payloadForResolvedissue: _On_Issue_Status_Resoloved;
+
     try {
-      //TODO: check this & or |
       const fetchedIssueFromDataBase: IBaseIssue & {
         status: number;
         name: string;
@@ -259,21 +253,16 @@ class IssueService {
           },
         };
 
-        on_issue = await gatewayIssueService.on_issue_status(
-          payloadForResolvedissue
-        );
-
-        //TODO: return here
-        return on_issue;
+        await gatewayIssueService.on_issue_status(payloadForResolvedissue);
       }
 
       if (
         fetchedIssueFromDataBase?.message?.issue.status === "OPEN" ||
         fetchedIssueFromDataBase?.message?.issue.status === "ESCALATE"
       ) {
-        on_issue = await gatewayIssueService.on_issue_status(
-          fetchedIssueFromDataBase
-        );
+        await gatewayIssueService.on_issue_status({
+          onIssueData: fetchedIssueFromDataBase,
+        });
       }
 
       // TODO - return send() with on_issue data
@@ -298,7 +287,7 @@ class IssueService {
 
       return res
         .status(500)
-        .json({ error: true, message: on_issue || "Something went wrong" });
+        .json({ error: true, message: "Something went wrong" });
     } catch (err) {
       return res
         .status(500)
@@ -323,22 +312,17 @@ class IssueService {
 
   async issueStatus(req: Request, res: Response) {
     try {
+      console.log("req?.body?", req?.body);
+
       if (!req?.body?.message) return;
 
       const issue_id = req.body.message.issue_id;
 
       const result = await dbServices.getIssueByIssueId(issue_id);
 
-      const response = await gatewayIssueService.on_issue_status(result);
+      await gatewayIssueService.on_issue_status(result);
 
-      //TODO: check response and act according now not tested yet
-      if (response) {
-        return res.status(200).json({ success: true, data: response });
-      }
-
-      return res
-        .status(500)
-        .json({ error: true, message: "Something went wrong" });
+      return res.status(200).json({ success: true, data: result });
     } catch (e) {
       return res
         .status(500)

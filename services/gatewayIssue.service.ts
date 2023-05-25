@@ -77,8 +77,6 @@ class GatewayIssueService {
           },
         };
 
-        //TODO: update database conditionally once you get response from on_issue api
-
         try {
           dbServices.addOrUpdateIssueWithKeyValue({
             issueKeyToFind: "context.transaction_id",
